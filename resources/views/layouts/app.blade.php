@@ -46,6 +46,24 @@
             transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
         }
 
+        /* Pagination & Arrow Size Fix */
+        nav[aria-label="Pagination Navigation"] svg,
+        .pagination svg,
+        nav svg {
+            width: 1rem !important;
+            height: 1rem !important;
+            max-width: 16px !important;
+            max-height: 16px !important;
+            display: inline-block !important;
+            vertical-align: middle;
+        }
+
+        .pagination {
+            margin-bottom: 0;
+            display: flex;
+            justify-content: center;
+        }
+
         .card-header {
             background-color: #ffffff;
             border-bottom: 1px solid #e2e8f0;
