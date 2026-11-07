@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
 {
@@ -34,26 +35,45 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            // Full name: Only letters, spaces, hyphens and apostrophes (NO NUMBERS)
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-zA-Z\s\'-]+$/',
+            ],
+            // Username: Must start with a letter, 3-20 chars, unique, no pure numbers
             'username' => [
                 'required',
                 'string',
                 'min:3',
                 'max:20',
                 'unique:users,username',
-                // Must start with a letter, letters/numbers/underscore/dots allowed, minimum 2 alphabetic letters
                 'regex:/^[a-zA-Z][a-zA-Z0-9_.-]*$/',
                 'not_regex:/^[0-9]+$/',
             ],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            // Password: Min 8 chars AND at least one special/unique symbol
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[@$!%*#?&^_\-~=+<>\/\\;:.,`"\'|{}[\]()]/',
+            ],
         ], [
+            'name.required' => 'Please enter your full name.',
+            'name.regex' => 'Full name can only contain letters and spaces. Numbers are not permitted.',
             'username.required' => 'A unique username is required.',
             'username.unique' => 'This username is already taken. Please choose another.',
             'username.regex' => 'Username must start with a letter and contain valid characters (letters, numbers, underscores, dots).',
             'username.not_regex' => 'Username cannot be composed purely of random numbers or digits.',
             'username.min' => 'Username must be at least 3 characters long.',
             'username.max' => 'Username cannot exceed 20 characters.',
+            'password.required' => 'Please choose a password.',
+            'password.min' => 'Password must be at least 8 characters long.',
+            'password.regex' => 'Password must contain at least one special or unique character (e.g. !@#$%^&*).',
+            'password.confirmed' => 'Password confirmation does not match.',
         ]);
     }
 
@@ -63,9 +83,9 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'username' => strtolower($data['username']),
-            'email' => strtolower($data['email']),
+            'name' => trim($data['name']),
+            'username' => strtolower(trim($data['username'])),
+            'email' => strtolower(trim($data['email'])),
             'password' => Hash::make($data['password']),
             'is_admin' => false,
         ]);

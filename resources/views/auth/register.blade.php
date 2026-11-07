@@ -14,12 +14,17 @@
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
 
-                    <!-- Full Name -->
+                    <!-- Full Name (Letters only, NO numbers) -->
                     <div class="mb-3">
                         <label for="name" class="form-label fw-semibold">Full Name</label>
                         <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
                                name="name" value="{{ old('name') }}" required autocomplete="name" autofocus
-                               placeholder="e.g. John Doe">
+                               placeholder="e.g. John Doe"
+                               pattern="^[a-zA-Z\s'-]+$"
+                               title="Full name can only contain letters and spaces (no numbers allowed)">
+                        <div class="form-text text-muted">
+                            <small><i class="bi bi-info-circle"></i> Letters and spaces only. Numbers are not allowed.</small>
+                        </div>
                         @error('name')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                         @enderror
@@ -55,12 +60,15 @@
                         @enderror
                     </div>
 
-                    <!-- Password -->
+                    <!-- Password (Minimum 8 chars + special character) -->
                     <div class="mb-3">
                         <label for="password" class="form-label fw-semibold">Password</label>
                         <input id="password" type="password" class="form-control @error('password') is-invalid @enderror"
                                name="password" required autocomplete="new-password"
-                               placeholder="Minimum 8 characters">
+                               placeholder="Min 8 characters with a special character (@$!%*#?&)">
+                        <div class="form-text text-muted">
+                            <small><i class="bi bi-shield-check text-primary"></i> Minimum 8 characters with at least one special character (e.g. @$!%*#?&).</small>
+                        </div>
                         @error('password')
                             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
                         @enderror
