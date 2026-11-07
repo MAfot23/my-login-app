@@ -52,15 +52,26 @@
                         </td>
                         <td class="text-end">
                             @if ($user->id !== auth()->id())
-                                <form method="POST" action="{{ route('admin.users.toggle-admin', $user) }}" class="d-inline"
-                                      onsubmit="return confirm('Change admin status for {{ $user->username }}?');">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm {{ $user->is_admin ? 'btn-outline-warning' : 'btn-outline-danger' }}">
-                                        {{ $user->is_admin ? 'Demote to User' : 'Promote to Admin' }}
-                                    </button>
-                                </form>
+                                <div class="d-inline-flex gap-1">
+                                    <form method="POST" action="{{ route('admin.users.toggle-admin', $user) }}" class="d-inline"
+                                          onsubmit="return confirm('Change admin status for {{ $user->username }}?');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm {{ $user->is_admin ? 'btn-outline-warning' : 'btn-outline-primary' }}">
+                                            {{ $user->is_admin ? 'Demote' : 'Promote' }}
+                                        </button>
+                                    </form>
+
+                                    <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to permanently delete user @{{ $user->username }}? This action cannot be undone.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete User">
+                                            <i class="bi bi-trash-fill me-1"></i>Delete
+                                        </button>
+                                    </form>
+                                </div>
                             @else
-                                <span class="badge bg-secondary">Current Session</span>
+                                <span class="badge bg-secondary">Current Admin</span>
                             @endif
                         </td>
                     </tr>

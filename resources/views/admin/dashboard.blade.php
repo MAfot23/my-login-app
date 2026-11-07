@@ -63,6 +63,82 @@
     </div>
 </div>
 
+<!-- Registered Users Management (with Delete Button) -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <div class="fw-semibold fs-6">
+            <i class="bi bi-people-fill text-primary me-2"></i>Registered Users
+            <span class="badge bg-light text-dark border ms-2">{{ $totalUsers }} total</span>
+        </div>
+        <a href="{{ route('admin.users') }}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-arrow-right-circle me-1"></i>View All
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 60px;">#</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th class="text-end" style="min-width: 170px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($recentUsers as $user)
+                    <tr>
+                        <td class="text-muted"><code>#{{ $user->id }}</code></td>
+                        <td class="fw-semibold">{{ $user->name }}</td>
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi bi-at"></i>{{ $user->username }}
+                            </span>
+                        </td>
+                        <td>{{ $user->email }}</td>
+                        <td>
+                            @if ($user->is_admin)
+                                <span class="badge bg-danger"><i class="bi bi-shield-check me-1"></i>Admin</span>
+                            @else
+                                <span class="badge bg-primary">User</span>
+                            @endif
+                        </td>
+                        <td>
+                            <small class="text-muted">{{ $user->created_at?->format('M d, Y') }}</small>
+                        </td>
+                        <td class="text-end">
+                            @if ($user->id !== auth()->id())
+                                <div class="d-inline-flex gap-1">
+                                    <form method="POST" action="{{ route('admin.users.toggle-admin', $user) }}" class="d-inline"
+                                          onsubmit="return confirm('Change admin role for {{ $user->username }}?');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm {{ $user->is_admin ? 'btn-outline-warning' : 'btn-outline-primary' }}">
+                                            {{ $user->is_admin ? 'Demote' : 'Promote' }}
+                                        </button>
+                                    </form>
+
+                                    <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to delete user @{{ $user->username }}? This action cannot be undone.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete User">
+                                            <i class="bi bi-trash-fill me-1"></i>Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            @else
+                                <span class="badge bg-secondary">Current Admin</span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <!-- Filter and Search -->
 <div class="card mb-4">
     <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">

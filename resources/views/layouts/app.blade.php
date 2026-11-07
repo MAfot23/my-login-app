@@ -46,7 +46,7 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url('/') }}">
-                    <i class="bi bi-shield-lock-fill text-primary"></i> Auth & Activity System
+                    <i class="bi bi-shield-lock-fill text-primary"></i> Simple Login System
                 </a>
 
                 <div class="d-flex align-items-center ms-auto gap-3">
